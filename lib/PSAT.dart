@@ -51,10 +51,7 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
             bottom: getTabBar()),
         body: getTabBarView(<Widget>[
           Dialer(),
-          BagCounter(driverNum: 1),
-          BagCounter(driverNum: 2),
-          BagCounter(driverNum: 3),
-          BagCounter(driverNum: 4)]
+          BagCounter(driverNum: 1)]
         )
     );
   }

@@ -413,24 +413,35 @@ class BagCounterState extends State<BagCounter> {
       ),
     );
 
-    return Align(
-        child: Scaffold(
-          body: ListView(
-            shrinkWrap: true,
-            children: [
-              textSection1,
-              buttonSection1,
-              textSection2,
-              buttonSection2,
-              textSection3,
-              buttonSection3,
-              textSection4,
-              buttonSection4,
-              textSection5,
-              buttonSection5,
-            ],
-          ),
-        ),
+    return Scaffold(
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          textSection1,
+          buttonSection1,
+          textSection2,
+          buttonSection2,
+          textSection3,
+          buttonSection3,
+          textSection4,
+          buttonSection4,
+          textSection5,
+          buttonSection5
+        ]
+      ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            int newDriver = driverNum + 1;
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BagCounter(driverNum: newDriver)
+                )
+            );
+          },
+          tooltip: 'Add another driver',
+          child: Icon(Icons.add)
+      )
     );
   }
 }
