@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
+import 'Directory.dart';
 
 class Dialer extends StatefulWidget {
   DialerState createState() => DialerState();
@@ -70,7 +71,8 @@ class DialerState extends State<Dialer> {
   @override
   Widget build(BuildContext context) {
 
-    return Form(
+    return Scaffold (
+      body: Form(
         key: _formKey,
         child: GestureDetector(
           onTap: () {
@@ -114,6 +116,19 @@ class DialerState extends State<Dialer> {
             ],
           ),
         )
+      ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Directory()
+                )
+            );
+          },
+          tooltip: 'Opens list of active shoppers',
+          child: Icon(Icons.list)
+      )
     );
   }
 }
