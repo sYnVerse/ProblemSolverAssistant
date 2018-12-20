@@ -13,7 +13,7 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 3, vsync: this);
+    controller = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -26,7 +26,6 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
     return TabBar(
       tabs: <Tab>[
         Tab(icon: Icon(Icons.call)),
-        Tab(icon: Icon(Icons.airport_shuttle)),
         Tab(icon: Icon(Icons.airport_shuttle))
       ],
 
