@@ -40,7 +40,7 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
     return TabBarView(
       children: tabs,
       controller: controller,
-      physics: NeverScrollableScrollPhysics(),
+      //physics: NeverScrollableScrollPhysics()
     );
   }
 
