@@ -414,6 +414,10 @@ class BagCounterState extends State<BagCounter> {
     );
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Problem Solver Assistant'),
+        backgroundColor: Colors.blue
+      ),
       body: ListView(
         shrinkWrap: true,
         children: [

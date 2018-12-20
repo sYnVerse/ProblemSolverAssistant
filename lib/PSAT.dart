@@ -45,9 +45,6 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text("Problem Solver Assistant Tool"),
-            backgroundColor: Colors.blue),
         body: getTabBarView(<Widget>[
           Dialer(),
           BagCounter(driverNum: 1)]

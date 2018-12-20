@@ -71,23 +71,39 @@ class DialerState extends State<Dialer> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold (
-      body: Form(
-        key: _formKey,
-        child: GestureDetector(
-          onTap: () {
-            SystemChannels.textInput.invokeMethod('TextInput.hide');
-            tfController.clear();
-          },
-          child: Column (
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text('Enter device number', textScaleFactor: 2.48),
-              Text('(Located on back of iPhone)'),
-              Text(''),
-              TextFormField(
-                  keyboardType: TextInputType.number,
+    _initCall() {
+        String phonePrefix = "tel://*67425395";
+        int directoryIndex = int.parse(tfController.text);
+        String finalAddress = phonePrefix + directory[directoryIndex];
+        launch(finalAddress);
+    }
+
+    return GestureDetector(
+      onTap: () {
+        SystemChannels.textInput.invokeMethod('TextInput.hide');
+        tfController.clear();
+      },
+      child: Scaffold (
+        appBar: AppBar (
+          title: Text('Problem Solver Assistant'),
+           backgroundColor: Colors.blue,
+        ),
+        body: Form(
+          key: _formKey,
+          child: GestureDetector(
+            onTap: () {
+              SystemChannels.textInput.invokeMethod('TextInput.hide');
+              tfController.clear();
+            },
+            child: Column (
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text('Enter device number', textScaleFactor: 2.48),
+                Text('(Located on back of iPhone)'),
+                Text(''),
+                TextFormField(
+                  keyboardType: TextInputType.numberWithOptions(),
                   validator: (value) {
                     int num = int.tryParse(value);
                     if (num == null || num < 2 || num > 45) {
@@ -95,29 +111,29 @@ class DialerState extends State<Dialer> {
                     }
                   },
                   controller: tfController,
-                  textAlign: TextAlign.center
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 36.0),
-                child: RaisedButton(
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        String phonePrefix = "tel://*67425395";
-                        int directoryIndex = int.parse(tfController.text);
-                        String finalAddress = phonePrefix + directory[directoryIndex];
-                        launch(finalAddress);
-                      }
-                      tfController.clear();
-                    },
-                    child: Text('Call', textScaleFactor: 1.5),
-                    highlightColor: Colors.blue
+                  textAlign: TextAlign.center,
+                  textInputAction: TextInputAction.go,
+                  onFieldSubmitted: (value) {
+                    if (_formKey.currentState.validate()) {
+                      _initCall();
+                    }
+                  }
                 ),
-              ),
-            ],
-          ),
-        )
-      ),
-      floatingActionButton: FloatingActionButton(
+                MaterialButton(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      _initCall();
+                    }
+                  },
+                  child: Icon(Icons.call, size: 50),
+                  highlightColor: Colors.blue
+                )
+              ],
+            ),
+          )
+        ),
+        floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(
                 context,
@@ -128,6 +144,7 @@ class DialerState extends State<Dialer> {
           },
           tooltip: 'Opens list of active shoppers',
           child: Icon(Icons.list)
+        )
       )
     );
   }
