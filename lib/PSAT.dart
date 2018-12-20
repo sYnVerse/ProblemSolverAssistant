@@ -47,11 +47,14 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
     return Scaffold(
         appBar: AppBar(
             title: Text("Problem Solver Assistant Tool"),
-            backgroundColor: Colors.blue,
-            bottom: getTabBar()),
+            backgroundColor: Colors.blue),
         body: getTabBarView(<Widget>[
           Dialer(),
           BagCounter(driverNum: 1)]
+        ),
+        bottomNavigationBar: Material(
+          child: getTabBar(),
+          color: Colors.blue,
         )
     );
   }
