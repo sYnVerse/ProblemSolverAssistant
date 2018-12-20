@@ -7,7 +7,6 @@ class BagCounter extends StatefulWidget {
 
   final int driverNum;
 
-  @override
   BagCounterState createState() => BagCounterState();
 }
 
