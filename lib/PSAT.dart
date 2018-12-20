@@ -30,8 +30,7 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
       ],
 
       // setup the controller
-      controller: controller,
-      indicatorColor: Colors.white
+      controller: controller
     );
   }
 
