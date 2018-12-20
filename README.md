@@ -1,4 +1,4 @@
-# ProblemSolverAssistant
+# Problem Solver Assistant
 Flutter application specifically designed to aid Problem Solvers at Amazon Prime Now
 
 # Features
