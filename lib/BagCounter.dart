@@ -415,8 +415,21 @@ class BagCounterState extends State<BagCounter> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Problem Solver Assistant'),
-        backgroundColor: Colors.blue
+        title: Text('PSAT: Bag Counter'),
+        backgroundColor: Colors.blue,
+        actions: [
+          new IconButton(
+            icon: Icon(Icons.add_shopping_cart),
+            onPressed: () {
+              int newDriver = driverNum + 1;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BagCounter(driverNum: newDriver)
+              )
+            );
+          }),
+        ]
       ),
       body: ListView(
         shrinkWrap: true,
@@ -432,19 +445,6 @@ class BagCounterState extends State<BagCounter> {
           textSection5,
           buttonSection5
         ]
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            int newDriver = driverNum + 1;
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BagCounter(driverNum: newDriver)
-                )
-            );
-          },
-          tooltip: 'Add another driver',
-          child: Icon(Icons.add)
       )
     );
   }

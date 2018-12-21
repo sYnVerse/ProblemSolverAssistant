@@ -14,8 +14,15 @@ class DialerState extends State<Dialer> {
 
   @override
   void dispose() {
-    tfController.dispose();
     super.dispose();
+    tfController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    tfController.clear();
   }
 
   List<String> directory = [
@@ -57,93 +64,97 @@ class DialerState extends State<Dialer> {
     "0516",
     "0867",
     "0832",
-    "0398",
-    "0103",
-    "0075",
-    "0334",
-    "0893",
-    "0345",
-    "0595",
-    "0072"
+    '0398',
+    '0103',
+    '0075',
+    '0334',
+    '0893',
+    '0345',
+    '0595',
+    '0072'
   ];
 
 
   @override
   Widget build(BuildContext context) {
 
-    _initCall() {
-        String phonePrefix = "tel://*67425395";
+    _initCall() async {
+        const phonePrefix = 'tel://*67425395';
         int directoryIndex = int.parse(tfController.text);
-        String finalAddress = phonePrefix + directory[directoryIndex];
-        launch(finalAddress);
+        var finalURL = phonePrefix + directory[directoryIndex];
+        if (await canLaunch(finalURL)) {
+          await launch(finalURL);
+        } else {
+          throw 'Could not launch $finalURL';
+        }
+        tfController.clear();
+        SystemChannels.textInput.invokeMethod('TextInput.hide');
     }
 
     return GestureDetector(
       onTap: () {
         SystemChannels.textInput.invokeMethod('TextInput.hide');
-        tfController.clear();
       },
       child: Scaffold (
         appBar: AppBar (
-          title: Text('Problem Solver Assistant'),
-           backgroundColor: Colors.blue,
+          title: Text('PSAT: Dialer'),
+          backgroundColor: Colors.blue,
+          actions: <Widget>[
+            IconButton(icon: Icon(Icons.contacts), onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Directory()
+              )
+            );
+          })
+          ],
         ),
         body: Form(
           key: _formKey,
-          child: GestureDetector(
-            onTap: () {
-              SystemChannels.textInput.invokeMethod('TextInput.hide');
-              tfController.clear();
-            },
-            child: Column (
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text('Enter device number', textScaleFactor: 2.48),
-                Text('(Located on back of iPhone)'),
-                Text(''),
-                TextFormField(
-                  keyboardType: TextInputType.numberWithOptions(),
-                  validator: (value) {
-                    int num = int.tryParse(value);
-                    if (num == null || num < 2 || num > 45) {
-                      return ' Enter a number between 2 and 45.';
-                    }
-                  },
-                  controller: tfController,
-                  textAlign: TextAlign.center,
-                  textInputAction: TextInputAction.go,
-                  onFieldSubmitted: (value) {
-                    if (_formKey.currentState.validate()) {
-                      _initCall();
-                    }
+          child: Column (
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: tfController,
+                textAlign: TextAlign.center,
+                textInputAction: TextInputAction.go,
+                validator: (value) {
+                  int num = int.tryParse(value);
+                  if (num == null || num < 2 || num > 45) {
+                    return ' Enter a number between 2 and 45!!!';
                   }
-                ),
-                MaterialButton(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      _initCall();
+                },
+                onFieldSubmitted: (value) {
+                  if (_formKey.currentState.validate()) {
+                    _initCall();
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: 'Enter device number',
+                  prefixText: '        ',
+                  suffixIcon: IconButton (
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      tfController.clear();
                     }
-                  },
-                  child: Icon(Icons.call, size: 50),
-                  highlightColor: Colors.blue
-                )
-              ],
-            ),
-          )
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Directory()
-                )
-            );
-          },
-          tooltip: 'Opens list of active shoppers',
-          child: Icon(Icons.list)
+                  )
+                ),
+              ),
+              MaterialButton(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    _initCall();
+                  }
+                },
+                child: Icon(Icons.phone, color: Colors.green, size: 48),
+                highlightColor: Colors.blue
+              )
+            ],
+          ),
         )
       )
     );

@@ -7,10 +7,24 @@ class Directory extends StatefulWidget {
 class DirectoryState extends State<Directory> {
   @override
   Widget build(BuildContext context) {
-    return Container (
-      width: 0,
-      height: 0,
-      color: Colors.white
+    return Scaffold (
+      appBar: AppBar(
+        title: Text('PSAT: Directory'),
+        backgroundColor: Colors.blue,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+             
+            },
+          )
+        ],
+      ),
+      body: Container(
+        width: 0,
+        height: 0,
+        color: Colors.white,
+      ),
     );
   }
 }

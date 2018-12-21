@@ -25,8 +25,8 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
   TabBar getTabBar() {
     return TabBar(
       tabs: <Tab>[
-        Tab(icon: Icon(Icons.call)),
-        Tab(icon: Icon(Icons.airport_shuttle))
+        Tab(icon: Icon(Icons.shopping_cart)),
+        Tab(icon: Icon(Icons.phone_android))
       ],
 
       // setup the controller
@@ -46,8 +46,8 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
         body: getTabBarView(<Widget>[
-          Dialer(),
-          BagCounter(driverNum: 1)]
+          BagCounter(driverNum: 1),
+          Dialer()]
         ),
         bottomNavigationBar: Material(
           child: getTabBar(),
