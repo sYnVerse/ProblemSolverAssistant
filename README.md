@@ -3,7 +3,7 @@ Flutter application specifically designed to aid Problem Solvers at Amazon Prime
 
 # Features
 * Place calls directly to coworkers on their work devices
-  * Currently hard coded to WFM-LAT devices
+  * Currently, it's not dynamic. Calls can only be made to WFM-LAT devices.
 * Tool to assist with counting bags
 
 # Link to beta
