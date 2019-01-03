@@ -182,10 +182,8 @@ class BagCounterState extends State<BagCounter> {
       child: Column (
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            '',
-            style: Theme.of(context).textTheme.title,
-          ),
+          Text(''),
+          Text(''),
           Text(
             'Cart 3',
             style: Theme.of(context).textTheme.title,
@@ -199,10 +197,8 @@ class BagCounterState extends State<BagCounter> {
       child: Column (
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            '',
-            style: Theme.of(context).textTheme.title,
-          ),
+          Text(''),
+          Text(''),
           Text(
             'Cart 4',
             style: Theme.of(context).textTheme.title,
@@ -237,8 +233,8 @@ class BagCounterState extends State<BagCounter> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.arrow_left),
-            iconSize: 100,
+            icon: Icon(Icons.remove_circle_outline),
+            iconSize: 48,
             onPressed: () {
               setState(() {
                 if (_cartOne > 0) {
@@ -263,8 +259,8 @@ class BagCounterState extends State<BagCounter> {
             )
           ),
           IconButton(
-            icon: Icon(Icons.arrow_right),
-            iconSize: 100,
+            icon: Icon(Icons.add_circle_outline),
+            iconSize: 48,
             onPressed: () {
               setState(() {
                 if (_cartOne < 50) {
@@ -283,8 +279,8 @@ class BagCounterState extends State<BagCounter> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.arrow_left),
-            iconSize: 100,
+            icon: Icon(Icons.remove_circle_outline),
+            iconSize: 48,
             onPressed: () {
               setState(() {
                 if (_cartTwo > 0) {
@@ -308,8 +304,8 @@ class BagCounterState extends State<BagCounter> {
                 style: Theme.of(context).textTheme.display3),
           ),
           IconButton(
-            icon: Icon(Icons.arrow_right),
-            iconSize: 100,
+            icon: Icon(Icons.add_circle_outline),
+            iconSize: 48,
             onPressed: () {
               setState(() {
                 if (_cartTwo < 50) {
@@ -328,8 +324,8 @@ class BagCounterState extends State<BagCounter> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.arrow_left),
-            iconSize: 100,
+            icon: Icon(Icons.remove_circle_outline),
+            iconSize: 48,
             onPressed: () {
               setState(() {
                 if (_cartThree > 0) {
@@ -353,8 +349,8 @@ class BagCounterState extends State<BagCounter> {
                 style: Theme.of(context).textTheme.display3),
           ),
           IconButton(
-            icon: Icon(Icons.arrow_right),
-            iconSize: 100,
+            icon: Icon(Icons.add_circle_outline),
+            iconSize: 48,
             onPressed: () {
               setState(() {
                 if (_cartThree < 50) {
@@ -373,8 +369,8 @@ class BagCounterState extends State<BagCounter> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.arrow_left),
-            iconSize: 100,
+            icon: Icon(Icons.remove_circle_outline),
+            iconSize: 48,
             onPressed: () {
               setState(() {
                 if (_cartFour > 0) {
@@ -398,8 +394,8 @@ class BagCounterState extends State<BagCounter> {
                 style: Theme.of(context).textTheme.display3),
           ),
           IconButton(
-            icon: Icon(Icons.arrow_right),
-            iconSize: 100,
+            icon: Icon(Icons.add_circle_outline),
+            iconSize: 48,
             onPressed: () {
               setState(() {
                 if (_cartFour < 50) {
@@ -413,10 +409,20 @@ class BagCounterState extends State<BagCounter> {
       ),
     );
 
+    Widget emptyBottom = Container (
+      child: Column (
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(''),
+          Text('')
+        ],
+      )
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text('PSAT: Bag Counter'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.indigo,
         actions: [
           new IconButton(
             icon: Icon(Icons.add_shopping_cart),
@@ -443,7 +449,8 @@ class BagCounterState extends State<BagCounter> {
           textSection4,
           buttonSection4,
           textSection5,
-          buttonSection5
+          buttonSection5,
+          emptyBottom
         ]
       )
     );
