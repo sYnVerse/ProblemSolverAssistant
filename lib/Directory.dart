@@ -10,10 +10,10 @@ class DirectoryState extends State<Directory> {
     return Scaffold (
       appBar: AppBar(
         title: Text('PSAT: Directory'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.indigo,
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.clear_all),
             onPressed: () {
 
             },
@@ -25,6 +25,10 @@ class DirectoryState extends State<Directory> {
         height: 0,
         color: Colors.white,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: null,
+        child: IconButton(icon: Icon(Icons.person_add, color: Colors.white), onPressed: null),
+      )
     );
   }
 }
