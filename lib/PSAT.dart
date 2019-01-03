@@ -51,7 +51,7 @@ class PSATState extends State<PSAT> with SingleTickerProviderStateMixin {
         ),
         bottomNavigationBar: Material(
           child: getTabBar(),
-          color: Colors.blue,
+          color: Colors.indigo
         )
     );
   }
