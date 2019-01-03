@@ -28,43 +28,43 @@ class DialerState extends State<Dialer> {
   List<String> directory = [
     null,
     null,
-    "0606",
-    "0109",
-    "0094",
-    "0410",
-    "0100",
-    "0077",
-    "0909",
-    "0112",
-    "0813",
-    "0323",
-    "0372",
-    "0087",
-    "0435",
-    "0384",
-    "0476",
-    "0890",
-    "0860",
-    "0439",
-    "0655",
-    "0622",
-    "0887",
-    "0426",
-    "0076",
-    "0541",
-    "0906",
-    "0370",
-    "0083",
-    "0085",
-    "0421",
-    "0383",
-    "0358",
-    "0089",
-    "0106",
-    "0516",
-    "0867",
-    "0832",
-    '0398',
+    '0606',
+    '0109',
+    '0094',
+    '0410',
+    '0100',
+    '0077',
+    '0909',
+    '0112',
+    '0813',
+    '0323',
+    '0372',
+    '0087',
+    '0435',
+    '0384',
+    '0476',
+    '0890',
+    '0860',
+    '0439',
+    '0655',
+    '0622',
+    '0887',
+    '0426',
+    '0076',
+    '0541',
+    '0906',
+    '0370',
+    '0083',
+    '0085',
+    '0421',
+    '0383',
+    '0358',
+    '0089',
+    '0106',
+    '0516',
+    '0867',
+    '0832',
+    '0397',
     '0103',
     '0075',
     '0334',
@@ -79,9 +79,9 @@ class DialerState extends State<Dialer> {
   Widget build(BuildContext context) {
 
     _initCall() async {
-        const phonePrefix = 'tel://*67425395';
+        const phonePrefix = 'tel:*671425395';
         int directoryIndex = int.parse(tfController.text);
-        var finalURL = phonePrefix + directory[directoryIndex];
+        final finalURL = phonePrefix + directory[directoryIndex];
         if (await canLaunch(finalURL)) {
           await launch(finalURL);
         } else {
@@ -98,9 +98,9 @@ class DialerState extends State<Dialer> {
       child: Scaffold (
         appBar: AppBar (
           title: Text('PSAT: Dialer'),
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.indigo,
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.contacts), onPressed: () {
+            IconButton(icon: Icon(Icons.important_devices), onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
