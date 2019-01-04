@@ -12,7 +12,7 @@ void main() {
         accentColor: Colors.indigoAccent,
 
         // Define the default Font Family
-        fontFamily: 'IBMPlexSans'
+        fontFamily: 'Thasadith'
       )
     )
   );
