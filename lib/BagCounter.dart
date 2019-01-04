@@ -138,6 +138,7 @@ class BagCounterState extends State<BagCounter> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(''),
+          Text(''),
           Text(
             'Driver $driverNum',
             style: Theme.of(context).textTheme.display1,
@@ -151,7 +152,6 @@ class BagCounterState extends State<BagCounter> {
       child: Column (
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(''),
           Text(''),
           Text(''),
           Text(
