@@ -13,11 +13,11 @@ class BagCounter extends StatefulWidget {
 
 class BagCounterState extends State<BagCounter> {
 
-  int _mainCounter = 0;
-  int _cartOne = 0;
-  int _cartTwo = 0;
-  int _cartThree = 0;
-  int _cartFour = 0;
+  int _mainCounter;
+  int _cartOne;
+  int _cartTwo;
+  int _cartThree;
+  int _cartFour;
 
   @override
   void initState() {
