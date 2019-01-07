@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'Dialer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+
 
 class Directory extends StatefulWidget {
   DirectoryState createState() => DirectoryState();
@@ -11,20 +15,75 @@ class DirectoryState extends State<Directory> {
   ListModel<Shopper> _list;
   Shopper _selectedItem;
   int _listCounter;
+  List<Shopper> _cachedData = [];
+  final String dataStoreKey = 'wJHBJmJaQTvPYjA3FT2';
 
   // controllers for TextFields
   final _nameController = TextEditingController();
   final _numController = TextEditingController();
+  final nameFocusNode = FocusNode();
+  final numFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _list = ListModel<Shopper>(
-      listKey: _listKey,
-      initialItems: null,
-      removedItemBuilder: _buildRemovedItem
-    );
-    _listCounter = 0;
+
+    // load data from cache
+    _loadCounter();
+    _loadList();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    // save data to cache
+    _saveCounter();
+    _saveList();
+  }
+
+  // load data from cache
+  _loadList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // decode data from cache
+    List<Shopper> tempList = [];
+    json
+        .decode((prefs.getString('cachedData$dataStoreKey')) ?? [])
+        .forEach((map) => tempList.add(new Shopper.fromJson(map)));
+
+    setState(() {
+      // assign tempList to global list
+      if(_cachedData.isEmpty) {
+        _cachedData = tempList;
+      }
+
+      // initialize list
+      _list = ListModel<Shopper>(
+        listKey: _listKey,
+        initialItems: _cachedData,
+        removedItemBuilder: _buildRemovedItem
+      );
+    });
+  }
+
+  _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _listCounter = (prefs.getInt('listCounter$dataStoreKey') ?? 0);
+    });
+  }
+
+  // save data to cache
+  _saveCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('listCounter$dataStoreKey', _listCounter);
+  }
+
+  // save list to cache
+  _saveList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('cachedData$dataStoreKey', jsonEncode(_list._items));
   }
 
   // Used to build list items that haven't been removed.
@@ -59,27 +118,22 @@ class DirectoryState extends State<Directory> {
 
   // Insert the "next item" into the list model.
   _insert(String name, int id) {
-    final int index =
-    _selectedItem == null ? _list.length : _list.indexOf(_selectedItem);
 
     // create new Shopper object
-    Shopper newShopper = Shopper(name, id, _listCounter);
+    Shopper newShopper = Shopper(_listCounter, name, id);
 
     // insert into list
-    _list.insert(index, newShopper);
+    _list.insert(_listCounter, newShopper);
 
     // increment counter
     setState(() {
       _listCounter++;
     });
-
-    // close AlertDialog
-    Navigator.of(context).pop();
   }
 
   // Remove the selected item from the list model.
   _remove() {
-    if (_selectedItem != null) {
+    if (_selectedItem != null && _listCounter > 0) {
       _list.removeAt(_list.indexOf(_selectedItem));
       setState(() {
         _selectedItem = null;
@@ -88,7 +142,7 @@ class DirectoryState extends State<Directory> {
     }
 
     // if nothing is selected, remove the last entry
-    else if (_selectedItem == null) {
+    else if (_selectedItem == null && _listCounter > 0) {
       _list.removeAt(_listCounter - 1);
       setState((){
         _listCounter--;
@@ -104,18 +158,18 @@ class DirectoryState extends State<Directory> {
         backgroundColor: Colors.indigo,
         actions: [
           IconButton(
-            icon: Icon(Icons.clear),
-            onPressed: _remove,
-            tooltip: 'Remove shopper'
+              icon: Icon(Icons.clear),
+              onPressed: _remove,
+              tooltip: 'Remove shopper'
           ),
           IconButton(
-            icon: Icon(Icons.clear_all),
-            onPressed: () {
-              if (_list.length != 0) {
-                _confirmClear();
-              }
-            },
-            tooltip: 'Clear all shoppers'
+              icon: Icon(Icons.clear_all),
+              onPressed: () {
+                if (_list.length != 0) {
+                  _confirmClear();
+                }
+              },
+              tooltip: 'Clear all shoppers'
           )
         ],
       ),
@@ -128,15 +182,22 @@ class DirectoryState extends State<Directory> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addShopper,
-        tooltip: 'Add a new shopper',
-        child: Icon(Icons.person_add, color: Colors.white)
+          onPressed: _addShopper,
+          tooltip: 'Add a new shopper',
+          child: Icon(Icons.person_add, color: Colors.white)
       )
     );
   }
 
   _addShopper() {
-    _getShopperData();
+    if (_selectedItem == null) {
+      _getShopperData();
+      FocusScope.of(context).requestFocus(nameFocusNode);
+    }
+    else if (_selectedItem != null) {
+      DialerState caller = DialerState();
+      caller.initCall(_selectedItem._id);
+    }
   }
 
   // removes all entries from the list model
@@ -171,9 +232,7 @@ class DirectoryState extends State<Directory> {
             // usually buttons at the bottom of the dialog
             FlatButton(
               child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: _dismissView
             ),
             FlatButton(
               child: Text('Yes'),
@@ -194,33 +253,61 @@ class DirectoryState extends State<Directory> {
         return AlertDialog(
           title: TextFormField(
             decoration: InputDecoration(hintText: 'Name'),
-            controller: _nameController
+            controller: _nameController,
+            focusNode: nameFocusNode,
+            textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.text,
+            onFieldSubmitted: (value) {
+              FocusScope.of(context).requestFocus(numFocusNode);
+            },
           ),
           content: TextFormField(
             decoration: InputDecoration(hintText: 'Device Number'),
-            controller: _numController
+            controller: _numController,
+            focusNode: numFocusNode,
+            textInputAction: TextInputAction.go,
+            keyboardType: TextInputType.number,
+            onFieldSubmitted: (value) {
+              _insertUserData();
+              _dismissView();
+            },
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
               child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: _dismissView
             ),
             FlatButton(
               child: Text('Add'),
               onPressed: () {
-                int deviceNum = int.tryParse(_numController.text.toString());
-                _insert(_nameController.text, deviceNum);
-                _nameController.clear();
-                _numController.clear();
+                _insertUserData();
+                _dismissView();
               }
             )
           ],
         );
       },
     );
+
+    // make first field focus
+    FocusScope.of(context).requestFocus(nameFocusNode);
+  }
+
+  /// helper function for _getShopperData()
+  // insert user data and clear fields
+  _insertUserData() {
+    int deviceNum = int.tryParse(_numController.text.toString());
+    _insert(_nameController.text, deviceNum);
+    _nameController.clear();
+    _numController.clear();
+  }
+
+  /// helper function for dismissing view
+  _dismissView() {
+    Navigator.pop(context);
+    _nameController.clear();
+    _numController.clear();
   }
 }
 
@@ -296,7 +383,6 @@ class CardItem extends StatelessWidget {
   final Shopper item;
   final bool selected;
 
-
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.display1;
@@ -313,33 +399,51 @@ class CardItem extends StatelessWidget {
           child: SizedBox(
             height: 72.0,
             child: Card(
-              color: Colors.primaries[item.key % Colors.primaries.length],
+              color: Colors.primaries[item.id % Colors.primaries.length],
               child: Center(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text(item.name, style: textStyle),
-                    Text(item.id.toString(), style: textStyle)
-                  ],
+                    Text(item.name, style: textStyle)
+                  ]
                 )
-              ),
-            ),
-          ),
-        ),
-      ),
+              )
+            )
+          )
+        )
+      )
     );
   }
 }
 
 class Shopper {
-  String name;
-  int id;
-  int key;
+  String _name;
+  int _id;
+  int _key;
 
   // default constructor
-  Shopper(String name, int id, int key) {
-    this.name = name;
-    this.id = id;
-    this.key = key;
+  Shopper(int key, String name, int id) {
+    _name = name;
+    _id = id;
+    _key = key;
   }
+
+
+  Shopper.fromJson(Map<String, dynamic> m) {
+    _key = m['key'];
+    _name = m['name'];
+    _id = m['id'];
+  }
+
+  int get id => _id;
+
+  String get name => _name;
+
+  int get key => _key;
+
+  Map<String, dynamic> toJson() => {
+    'key': _key,
+    'name': _name,
+    'id': _id,
+  };
 }
