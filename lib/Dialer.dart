@@ -11,6 +11,8 @@ class DialerState extends State<Dialer> {
 
   final _formKey = GlobalKey<FormState>();
   final tfController = TextEditingController();
+  final phonePrefix = 'tel:*671425395';
+
 
   @override
   void dispose() {
@@ -74,19 +76,21 @@ class DialerState extends State<Dialer> {
     '0072'
   ];
 
+  initCall(int directoryIndex) async {
+    final finalURL = phonePrefix + directory[directoryIndex];
+    if (await canLaunch(finalURL)) {
+      await launch(finalURL);
+    } else {
+      throw 'Could not launch $finalURL';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    _initCall() async {
-        const phonePrefix = 'tel:*671425395';
-        int directoryIndex = int.parse(tfController.text);
-        final finalURL = phonePrefix + directory[directoryIndex];
-        if (await canLaunch(finalURL)) {
-          await launch(finalURL);
-        } else {
-          throw 'Could not launch $finalURL';
-        }
+    _call() async {
+        int userInput = int.parse(tfController.text);
+        initCall(userInput);
         tfController.clear();
         SystemChannels.textInput.invokeMethod('TextInput.hide');
     }
@@ -129,7 +133,7 @@ class DialerState extends State<Dialer> {
                 },
                 onFieldSubmitted: (value) {
                   if (_formKey.currentState.validate()) {
-                    _initCall();
+                    _call();
                   }
                 },
                 decoration: InputDecoration(
@@ -147,7 +151,7 @@ class DialerState extends State<Dialer> {
                 padding: EdgeInsets.symmetric(vertical: 24),
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
-                    _initCall();
+                    _call();
                   }
                 },
                 child: Icon(Icons.phone, color: Colors.green, size: 48),
