@@ -111,8 +111,8 @@ class DirectoryState extends State<Directory> {
   }
 
   // Used to build an item after it has been removed from the list. This method is
-  // needed because a removed item remains  visible until its animation has
-  // completed (even though it's gone as far this ListModel is concerned).
+  // needed because a removed item remains visible until its animation has
+  // completed (even though it's gone as far as this ListModel is concerned).
   // The widget will be used by the [AnimatedListState.removeItem] method's
   // [AnimatedListRemovedItemBuilder] parameter.
   Widget _buildRemovedItem(
@@ -503,29 +503,28 @@ class CardItem extends StatelessWidget {
 } // class CardItem
 
 class Shopper {
-  String _name;
-  int _id;
-  int _key;
-
-  // default constructor
-  Shopper(int key, String name, int id) {
-    _name = name;
-    _id = id;
-    _key = key;
-  }
+  final int _key;
+  final String _name;
+  final int _id;
 
 
-  Shopper.fromJson(Map<String, dynamic> m) {
-    _key = m['key'];
-    _name = m['name'];
-    _id = m['id'];
-  }
+  /// constructor
+  Shopper(this._key, this._name, this._id);
 
-  int get id => _id;
+
+  /// getters
+  int get key => _key;
 
   String get name => _name;
 
-  int get key => _key;
+  int get id => _id;
+
+
+  /// JSON serialization
+  Shopper.fromJson(Map<String, dynamic> json)
+    : _key = json['key'],
+      _name = json['name'],
+      _id = json['id'];
 
   Map<String, dynamic> toJson() => {
     'key': _key,
