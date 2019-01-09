@@ -235,6 +235,7 @@ class BagCounterState extends State<BagCounter> {
           IconButton(
             icon: Icon(Icons.remove_circle_outline),
             iconSize: 48,
+            tooltip: 'Decrease by 1',
             onPressed: () {
               setState(() {
                 if (_cartOne > 0) {
@@ -242,7 +243,7 @@ class BagCounterState extends State<BagCounter> {
                   _updateMainCount(driverNum);
                 }
               });
-            },
+            }
           ),
           FlatButton(
             onPressed: () {
@@ -261,6 +262,7 @@ class BagCounterState extends State<BagCounter> {
           IconButton(
             icon: Icon(Icons.add_circle_outline),
             iconSize: 48,
+            tooltip: 'Increase by 1',
             onPressed: () {
               setState(() {
                 if (_cartOne < 50) {
@@ -281,6 +283,7 @@ class BagCounterState extends State<BagCounter> {
           IconButton(
             icon: Icon(Icons.remove_circle_outline),
             iconSize: 48,
+            tooltip: 'Decrease by 1',
             onPressed: () {
               setState(() {
                 if (_cartTwo > 0) {
@@ -306,6 +309,7 @@ class BagCounterState extends State<BagCounter> {
           IconButton(
             icon: Icon(Icons.add_circle_outline),
             iconSize: 48,
+            tooltip: 'Increase by 1',
             onPressed: () {
               setState(() {
                 if (_cartTwo < 50) {
@@ -326,6 +330,7 @@ class BagCounterState extends State<BagCounter> {
           IconButton(
             icon: Icon(Icons.remove_circle_outline),
             iconSize: 48,
+            tooltip: 'Decrease by 1',
             onPressed: () {
               setState(() {
                 if (_cartThree > 0) {
@@ -351,6 +356,7 @@ class BagCounterState extends State<BagCounter> {
           IconButton(
             icon: Icon(Icons.add_circle_outline),
             iconSize: 48,
+            tooltip: 'Increase by 1',
             onPressed: () {
               setState(() {
                 if (_cartThree < 50) {
@@ -371,6 +377,7 @@ class BagCounterState extends State<BagCounter> {
           IconButton(
             icon: Icon(Icons.remove_circle_outline),
             iconSize: 48,
+            tooltip: 'Decrease by 1',
             onPressed: () {
               setState(() {
                 if (_cartFour > 0) {
@@ -396,6 +403,7 @@ class BagCounterState extends State<BagCounter> {
           IconButton(
             icon: Icon(Icons.add_circle_outline),
             iconSize: 48,
+            tooltip: 'Increase by 1',
             onPressed: () {
               setState(() {
                 if (_cartFour < 50) {
@@ -426,6 +434,7 @@ class BagCounterState extends State<BagCounter> {
         actions: [
           new IconButton(
             icon: Icon(Icons.add_shopping_cart),
+            tooltip: 'Go to next driver',
             onPressed: () {
               int newDriver = driverNum + 1;
               Navigator.push(
