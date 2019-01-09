@@ -79,7 +79,7 @@ class DialerState extends State<Dialer> {
   initCall(int directoryIndex) async {
     final finalURL = phonePrefix + directory[directoryIndex];
     if (await canLaunch(finalURL)) {
-      await launch(finalURL);
+      await launch(Uri.encodeFull(finalURL));
     } else {
       throw 'Could not launch $finalURL';
     }
@@ -104,14 +104,16 @@ class DialerState extends State<Dialer> {
           title: Text('PSAT: Dialer'),
           backgroundColor: Colors.indigo,
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.important_devices), onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Directory()
-              )
-            );
-          })
+            IconButton(
+              icon: Icon(Icons.important_devices),
+              tooltip: 'Opens directory of shoppers',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Directory())
+                );
+              }
+            )
           ],
         ),
         body: Form(
@@ -155,7 +157,7 @@ class DialerState extends State<Dialer> {
                   }
                 },
                 child: Icon(Icons.phone, color: Colors.green, size: 48),
-                highlightColor: Colors.blue
+                highlightColor: Colors.indigo,
               )
             ],
           ),
