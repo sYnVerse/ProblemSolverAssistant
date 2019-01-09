@@ -429,7 +429,7 @@ class BagCounterState extends State<BagCounter> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('PSAT: Bag Counter'),
+        title: Text('Bag Counter'),
         backgroundColor: Colors.indigo,
         actions: [
           new IconButton(

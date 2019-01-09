@@ -28,7 +28,7 @@ class DirectoryState extends State<Directory> {
   @override
   void initState() {
     super.initState();
-
+    
     // load data from cache
     _loadCounter();
     _loadList();
@@ -347,7 +347,7 @@ class DirectoryState extends State<Directory> {
     return Scaffold (
       key: scaffoldState,
         appBar: AppBar(
-          title: Text('PSAT: Directory'),
+          title: Text('Directory'),
           backgroundColor: Colors.indigo,
           actions: [
             IconButton(

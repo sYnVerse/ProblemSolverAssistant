@@ -101,7 +101,7 @@ class DialerState extends State<Dialer> {
       },
       child: Scaffold (
         appBar: AppBar (
-          title: Text('PSAT: Dialer'),
+          title: Text('Dialer'),
           backgroundColor: Colors.indigo,
           actions: <Widget>[
             IconButton(
