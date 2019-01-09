@@ -8,4 +8,4 @@ Flutter application specifically designed to aid Problem Solvers at Amazon Prime
 
 ## Link to beta
 * [Android](https://acsweb.ucsd.edu/~c1tran/dev/amazon/app-release.apk)
-* [iOS](https://tiny.app.link/fxZ1HkfLkT)
+* [iOS](https://tiny.app.link/bpbZrUAPkT)
