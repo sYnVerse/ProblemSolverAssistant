@@ -1,6 +1,6 @@
 name: problem_solver_assistant
 description: Flutter application specifically designed to aid Problem Solvers at Amazon Prime Now
-version: 1.3.2
+version: 1.3.3+2
 
 
 environment:
