@@ -117,13 +117,12 @@ class DirectoryState extends State<Directory> {
   // [AnimatedListRemovedItemBuilder] parameter.
   Widget _buildRemovedItem(
       Shopper item, BuildContext context, Animation<double> animation) {
-    return CardItem(
-      animation: animation,
-      item: item,
-      selected: false,
-      removed: true
-      // No gesture detector here: we don't want removed items to be interactive.
-    );
+//    return CardItem(
+//      animation: animation,
+//      item: item,
+//      selected: false
+//      // No gesture detector here: we don't want removed items to be interactive.
+//    );
   }
 
   // Insert the "next item" into the list model.
@@ -446,8 +445,7 @@ class CardItem extends StatelessWidget {
         @required this.animation,
         this.onTap,
         @required this.item,
-        this.selected: false,
-        this.removed: false})
+        this.selected: false})
       : assert(animation != null),
         assert(selected != null),
         super(key: key);
@@ -456,12 +454,11 @@ class CardItem extends StatelessWidget {
   final VoidCallback onTap;
   final Shopper item;
   final bool selected;
-  final bool removed;
 
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.display1;
-    double height = 72.0;
+
     if (selected) {
       textStyle = textStyle.copyWith(
           color: Colors.black,
@@ -471,9 +468,7 @@ class CardItem extends StatelessWidget {
     else if (!selected) {
       textStyle = textStyle.copyWith(color: Colors.black);
     }
-    if (removed) {
-      height = 0;
-    }
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizeTransition(
@@ -483,7 +478,7 @@ class CardItem extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           onTap: onTap,
           child: SizedBox(
-            height: height,
+            height: 72.0,
             child: Card(
               color: Colors.primaries[item.id % Colors.primaries.length],
               child: Center(
