@@ -28,7 +28,14 @@ class DirectoryState extends State<Directory> {
   @override
   void initState() {
     super.initState();
-    
+
+    // initialize ListModel
+    _list = ListModel<Shopper>(
+        listKey: _listKey,
+        initialItems: _cachedData,
+        removedItemBuilder: _buildRemovedItem
+    );
+
     // load data from cache
     _loadCounter();
     _loadList();
