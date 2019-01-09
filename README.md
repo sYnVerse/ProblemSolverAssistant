@@ -7,4 +7,7 @@ Flutter application specifically designed to aid Problem Solvers at Amazon Prime
 * Tool to assist with counting bags
 
 # Link to beta
-
+* Android
+   *[a link](https://acsweb.ucsd.edu/~c1tran/dev/amazon/app-release.apk)
+* iOS
+   *[a link](https://tiny.app.link/fxZ1HkfLkT)
