@@ -12,6 +12,7 @@ class Directory extends StatefulWidget {
 class DirectoryState extends State<Directory> {
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  final GlobalKey<ScaffoldState> scaffoldState = new GlobalKey<ScaffoldState>();
   ListModel<Shopper> _list;
   Shopper _selectedItem;
   int _listCounter;
@@ -89,15 +90,23 @@ class DirectoryState extends State<Directory> {
   // Used to build list items that haven't been removed.
   Widget _buildItem(
       BuildContext context, int index, Animation<double> animation) {
-    return CardItem(
-      animation: animation,
-      item: _list[index],
-      selected: _selectedItem == _list[index],
-      onTap: () {
-        setState(() {
-          _selectedItem = _selectedItem == _list[index] ? null : _list[index];
-        });
-      },
+    return Dismissible(
+        key: Key(_list[index].toString()),
+        onDismissed: (direction) {
+          _selectedItem = _list[index];
+          _showSnackBar(_selectedItem.name, _selectedItem.id.toString(), 'remove');
+          _remove();
+        },
+        child: CardItem(
+          animation: animation,
+          item: _list[index],
+          selected: _selectedItem == _list[index],
+          onTap: () {
+            setState(() {
+              _selectedItem = _selectedItem == _list[index] ? null : _list[index];
+            });
+          },
+        )
     );
   }
 
@@ -112,6 +121,7 @@ class DirectoryState extends State<Directory> {
       animation: animation,
       item: item,
       selected: false,
+      removed: true
       // No gesture detector here: we don't want removed items to be interactive.
     );
   }
@@ -150,53 +160,26 @@ class DirectoryState extends State<Directory> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold (
-      appBar: AppBar(
-        title: Text('PSAT: Directory'),
-        backgroundColor: Colors.indigo,
-        actions: [
-          IconButton(
-              icon: Icon(Icons.clear),
-              onPressed: _remove,
-              tooltip: 'Remove shopper'
-          ),
-          IconButton(
-              icon: Icon(Icons.clear_all),
-              onPressed: () {
-                if (_list.length != 0) {
-                  _confirmClear();
-                }
-              },
-              tooltip: 'Clear all shoppers'
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: AnimatedList(
-          key: _listKey,
-          initialItemCount: _list.length,
-          itemBuilder: _buildItem,
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: _addShopper,
-          tooltip: 'Add a new shopper',
-          child: Icon(Icons.person_add, color: Colors.white)
-      )
-    );
+  _addShopper() {
+    _getShopperData();
   }
 
-  _addShopper() {
-    if (_selectedItem == null) {
-      _getShopperData();
-      FocusScope.of(context).requestFocus(nameFocusNode);
-    }
-    else if (_selectedItem != null) {
+  _callShopper() {
+    if (_selectedItem != null) {
+
+      // show SnackBar notification
+      String name = _selectedItem.name;
+      String num = _selectedItem.id.toString();
+      _showSnackBar(_selectedItem.name, _selectedItem.id.toString(), 'call');
+
+      // create a caller object and init call
       DialerState caller = DialerState();
       caller.initCall(_selectedItem._id);
+
+      // reset selectedItem
+      setState(() {
+        _selectedItem = null;
+      });
     }
   }
 
@@ -268,8 +251,14 @@ class DirectoryState extends State<Directory> {
             textInputAction: TextInputAction.go,
             keyboardType: TextInputType.number,
             onFieldSubmitted: (value) {
-              _insertUserData();
-              _dismissView();
+              if (_insertUserData()) {
+                _showSnackBar(_nameController.text, _numController.text, 'add');
+                _dismissView();
+              }
+              else {
+                _dismissView();
+                _showSnackBar(null, null, null);
+              }
             },
           ),
           actions: <Widget>[
@@ -281,8 +270,14 @@ class DirectoryState extends State<Directory> {
             FlatButton(
               child: Text('Add'),
               onPressed: () {
-                _insertUserData();
-                _dismissView();
+                if (_insertUserData()) {
+                  _showSnackBar(_nameController.text, _numController.text, 'add');
+                  _dismissView();
+                }
+                else {
+                  _dismissView();
+                  _showSnackBar(null, null, null);
+                }
               }
             )
           ],
@@ -294,13 +289,51 @@ class DirectoryState extends State<Directory> {
     FocusScope.of(context).requestFocus(nameFocusNode);
   }
 
+  /// helper function to show SnackBar notification
+  _showSnackBar(String name, String num, String type) {
+    SnackBar snackBar;
+
+    switch (type) {
+      case 'call':
+        snackBar = SnackBar(
+          content: Text('Calling $name #$num ....'),
+          duration: Duration(seconds: 1, milliseconds: 500)
+        );
+        break;
+      case 'add':
+        snackBar = SnackBar(
+          content: Text('$name #$num added'),
+          duration: Duration(seconds: 2, milliseconds: 500)
+        );
+        break;
+      case 'remove':
+        snackBar = SnackBar(
+          content: Text('$name #$num removed'),
+          duration: Duration(seconds: 2, milliseconds: 500)
+        );
+        break;
+      default:
+        snackBar = SnackBar(
+          content: Text('An error had occured. Try again.'),
+          duration: Duration(seconds: 1, milliseconds: 500)
+        );
+    }
+
+    scaffoldState.currentState.showSnackBar(snackBar);
+  }
+
   /// helper function for _getShopperData()
   // insert user data and clear fields
-  _insertUserData() {
+  bool _insertUserData() {
     int deviceNum = int.tryParse(_numController.text.toString());
-    _insert(_nameController.text, deviceNum);
-    _nameController.clear();
-    _numController.clear();
+    if (deviceNum == null) {
+      return false;
+    }
+    else if (deviceNum > 1 && deviceNum < 46) {
+      _insert(_nameController.text, deviceNum);
+      return true;
+    }
+    return false;
   }
 
   /// helper function for dismissing view
@@ -308,6 +341,46 @@ class DirectoryState extends State<Directory> {
     Navigator.pop(context);
     _nameController.clear();
     _numController.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold (
+      key: scaffoldState,
+        appBar: AppBar(
+          title: Text('PSAT: Directory'),
+          backgroundColor: Colors.indigo,
+          actions: [
+            IconButton(
+                icon: Icon(Icons.person_add),
+                onPressed: _addShopper,
+                tooltip: 'Add a new shopper'
+            ),
+            IconButton(
+                icon: Icon(Icons.clear_all),
+                onPressed: () {
+                  if (_list.length != 0) {
+                    _confirmClear();
+                  }
+                },
+                tooltip: 'Clear all shoppers'
+            )
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: AnimatedList(
+              key: _listKey,
+              initialItemCount: _list.length,
+              itemBuilder: _buildItem
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: _callShopper,
+            tooltip: 'Call shopper',
+            child: Icon(Icons.call)
+        )
+    );
   }
 }
 
@@ -363,8 +436,8 @@ class ListModel<E> {
   int indexOf(E item) => _items.indexOf(item);
 }
 
-/// Displays its integer item as 'item N' on a Card whose color is based on
-/// the item's value. The text is displayed in bright green if selected is true.
+/// Displays its Shopper item on a Card whose color is based on the item's
+/// value. The text is displayed in boldface if an item is selected.
 /// This widget's height is based on the animation parameter, it varies
 /// from 0 to 128 as the animation varies from 0.0 to 1.0.
 class CardItem extends StatelessWidget {
@@ -373,7 +446,8 @@ class CardItem extends StatelessWidget {
         @required this.animation,
         this.onTap,
         @required this.item,
-        this.selected: false})
+        this.selected: false,
+        this.removed: false})
       : assert(animation != null),
         assert(selected != null),
         super(key: key);
@@ -382,12 +456,24 @@ class CardItem extends StatelessWidget {
   final VoidCallback onTap;
   final Shopper item;
   final bool selected;
+  final bool removed;
 
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.display1;
-    if (selected)
-      textStyle = textStyle.copyWith(color: Colors.lightGreenAccent[400]);
+    double height = 72.0;
+    if (selected) {
+      textStyle = textStyle.copyWith(
+          color: Colors.black,
+          fontWeight: FontWeight.bold
+      );
+    }
+    else if (!selected) {
+      textStyle = textStyle.copyWith(color: Colors.black);
+    }
+    if (removed) {
+      height = 0;
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizeTransition(
@@ -397,7 +483,7 @@ class CardItem extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           onTap: onTap,
           child: SizedBox(
-            height: 72.0,
+            height: height,
             child: Card(
               color: Colors.primaries[item.id % Colors.primaries.length],
               child: Center(
@@ -405,16 +491,16 @@ class CardItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Text(item.name, style: textStyle)
-                  ]
-                )
-              )
-            )
-          )
-        )
-      )
-    );
-  }
-}
+                  ] // <Widget>
+                ) // Row
+              ) // Center
+            ) // Card
+          ) // SizedBox
+        ) // GestureDetector
+      ) // SizeTransition
+    ); // Padding
+  } // build(BuildContext context)
+} // class CardItem
 
 class Shopper {
   String _name;
